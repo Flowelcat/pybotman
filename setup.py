@@ -9,7 +9,7 @@ with open(path.join(this_directory, 'README.MD'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='python-botman-api',
+    name='pybotman',
     version=__version__,
     description='Python API wrapper for botman bots',
     long_description=long_description,

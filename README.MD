@@ -10,7 +10,7 @@ Botman API provides bot control features along with providing some methods for f
 
 Installing
 ---
-You can install python-twitter using:
+You can install pybotman using:
 
 ```console
 $ pip install pybotman
