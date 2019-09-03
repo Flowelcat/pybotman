@@ -15,7 +15,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/Flowelcat/pybotman',
-    download_url=f'https://github.com/Flowelcat/pybotman/archive/pybotman_{__version__.replace(".", "_")}.tar.gz',
+    download_url=f'https://github.com/Flowelcat/pybotman/archive/v.{__version__}.tar.gz',
     author='Flowelcat',
     author_email='flowelcat@gmail.com',
     keywords=["botman", 'pybotman', 'botmanbot', 'botmanapi'],
