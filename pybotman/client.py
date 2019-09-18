@@ -7,10 +7,12 @@ from requests import Response
 
 
 class BotmanApi:
-    def __init__(self, base_url: str, token: str):
+    def __init__(self, base_url: str, token: str, cert=False, timeout: int = 5):
         self.base_url = base_url + "{path}"
         self.token = token
         self.last_response = None
+        self.cert = cert
+        self.timeout = timeout
 
     def _headers(self) -> dict:
         return {"X-API-KEY": self.token}
@@ -22,15 +24,18 @@ class BotmanApi:
         else:
             return {}
 
-    def _post(self, endpoint: str, data: dict = None) -> dict:
-        response = requests.post(endpoint, json=data, headers=self._headers(), verify=False, timeout=5)
-        self.last_response = response
-        result = self._parse_response(response)
-        return result
+    def _post(self, endpoint: str, data: dict = None) -> Union[dict, bool]:
+        try:
+            response = requests.post(endpoint, json=data, headers=self._headers(), verify=self.cert, timeout=self.timeout)
+            self.last_response = response
+            result = self._parse_response(response)
+            return result
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+            return {}
 
     def _get(self, endpoint: str, params: dict = None) -> dict:
         try:
-            response = requests.get(endpoint, params=params, headers=self._headers(), verify=False, timeout=5)
+            response = requests.get(endpoint, params=params, headers=self._headers(), verify=self.cert, timeout=self.timeout)
             self.last_response = response
             result = self._parse_response(response)
             return result
@@ -68,7 +73,15 @@ class BotmanApi:
         content = self._post(endpoint)
         return content.get('success', False)
 
-    def get_data(self, table: str, columns: List[str] = None, limit: int = 300, offset: int = 0, ordering: int = 1) -> List[Dict]:
+    def uptime(self) -> Union[datetime.timedelta, bool]:
+        endpoint = self.base_url.format(path='bot/uptime')
+        content = self._get(endpoint)
+        if content.get('success', False):
+            return datetime.timedelta(seconds=content['data']['uptime'])
+        else:
+            return False
+
+    def get_data(self, table: str, columns: List[str] = None, limit: int = 300, offset: int = 0, ordering: int = 1) -> Union[List[Dict], bool]:
         endpoint = self.base_url.format(path=f'bot/data/{table}')
 
         params = {
@@ -81,9 +94,9 @@ class BotmanApi:
         if content.get('success', False):
             return content['data']
         else:
-            return []
+            return False
 
-    def get_specific_data(self, table: str, data_id: Union[int, str], columns: List[str] = None) -> dict:
+    def get_specific_data(self, table: str, data_id: Union[int, str], columns: List[str] = None) -> Union[dict, bool]:
         endpoint = self.base_url.format(path=f'bot/data/{table}/{data_id}')
 
         params = {
@@ -93,7 +106,7 @@ class BotmanApi:
         if content.get('success', False):
             return content['data']
         else:
-            return {}
+            return False
 
     def count_data(self, table: str) -> int:
         endpoint = self.base_url.format(path=f'bot/data/{table}/count')
@@ -102,12 +115,14 @@ class BotmanApi:
         if content.get('success', False):
             return content['data']
         else:
-            return -1
+            return False
 
-    def distribution(self, text: str, when: datetime.datetime = None) -> bool:
+    def distribution(self, text: str, when: datetime.datetime = None, web_preview: bool = True, notification: bool = True) -> bool:
         endpoint = self.base_url.format(path='bot/distribution')
         data = {
             "text": text,
+            "web_preview": web_preview,
+            "notification": notification
         }
         if when:
             data.update(when=when.isoformat())
