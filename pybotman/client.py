@@ -2,6 +2,7 @@ import datetime
 import json
 from typing import List, Dict, Union
 
+import dateutil.parser
 import requests
 from requests import Response
 
@@ -81,6 +82,16 @@ class BotmanApi:
         else:
             return False
 
+    def start_date(self) -> Union[datetime.datetime, bool]:
+        endpoint = self.base_url.format(path='bot/start-date')
+        content = self._get(endpoint)
+        if content.get('success', False):
+            if content['data']['start_date'] is None:
+                return None
+            return dateutil.parser.parse(content['data']['start_date'])
+        else:
+            return False
+
     def get_data(self, table: str, columns: List[str] = None, limit: int = 300, offset: int = 0, ordering: int = 1) -> Union[List[Dict], bool]:
         endpoint = self.base_url.format(path=f'bot/data/{table}')
 
@@ -139,3 +150,35 @@ class BotmanApi:
 
         content = self._post(endpoint, data=data)
         return content.get('success', False)
+
+    def get_users(self, limit: int = 300, offset: int = 0, ordering: int = 1) -> Union[List[Dict], bool]:
+        endpoint = self.base_url.format(path=f'bot/users')
+
+        params = {
+            "limit": limit,
+            "offset": offset,
+            "ordering": ordering
+        }
+        content = self._get(endpoint, params=params)
+        if content.get('success', False):
+            return content['data']
+        else:
+            return False
+
+    def get_user(self, user_id: Union[int, str]) -> Union[dict, bool]:
+        endpoint = self.base_url.format(path=f'bot/users/{user_id}')
+
+        content = self._get(endpoint, params={})
+        if content.get('success', False):
+            return content['data']
+        else:
+            return False
+
+    def get_stats(self) -> Union[Dict, bool]:
+        endpoint = self.base_url.format(path=f'bot/stats')
+
+        content = self._get(endpoint, params={})
+        if content.get('success', False):
+            return content['data']
+        else:
+            return False

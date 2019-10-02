@@ -20,8 +20,8 @@ setup(
     author_email='flowelcat@gmail.com',
     keywords=["botman", 'pybotman', 'botmanbot', 'botmanapi'],
     license='apache-2.0',
-    packages=['pybotman'],
     install_requires=['requests'],
+    packages=['pybotman'],
     python_requires='>3.6.0',
     classifiers=[
         'Development Status :: 4 - Beta',
