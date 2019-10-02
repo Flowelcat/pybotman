@@ -93,7 +93,7 @@ class BotmanApi:
             return False
 
     def get_data(self, table: str, columns: List[str] = None, limit: int = 300, offset: int = 0, ordering: int = 1) -> Union[List[Dict], bool]:
-        endpoint = self.base_url.format(path=f'bot/data/{table}')
+        endpoint = self.base_url.format(path='bot/data/{table}'.format(table=table))
 
         params = {
             "columns": ", ".join(columns) if columns else None,
@@ -108,7 +108,7 @@ class BotmanApi:
             return False
 
     def get_specific_data(self, table: str, data_id: Union[int, str], columns: List[str] = None) -> Union[dict, bool]:
-        endpoint = self.base_url.format(path=f'bot/data/{table}/{data_id}')
+        endpoint = self.base_url.format(path='bot/data/{table}/{data_id}'.format(table=table, data_id=data_id))
 
         params = {
             "columns": ", ".join(columns) if columns else None,
@@ -120,7 +120,7 @@ class BotmanApi:
             return False
 
     def count_data(self, table: str) -> int:
-        endpoint = self.base_url.format(path=f'bot/data/{table}/count')
+        endpoint = self.base_url.format(path='bot/data/{table}/count'.format(table=table))
 
         content = self._get(endpoint, params={})
         if content.get('success', False):
@@ -152,7 +152,7 @@ class BotmanApi:
         return content.get('success', False)
 
     def get_users(self, limit: int = 300, offset: int = 0, ordering: int = 1) -> Union[List[Dict], bool]:
-        endpoint = self.base_url.format(path=f'bot/users')
+        endpoint = self.base_url.format(path='bot/users')
 
         params = {
             "limit": limit,
@@ -166,7 +166,7 @@ class BotmanApi:
             return False
 
     def get_user(self, user_id: Union[int, str]) -> Union[dict, bool]:
-        endpoint = self.base_url.format(path=f'bot/users/{user_id}')
+        endpoint = self.base_url.format(path='bot/users/{user_id}'.format(user_id=user_id))
 
         content = self._get(endpoint, params={})
         if content.get('success', False):
@@ -175,7 +175,7 @@ class BotmanApi:
             return False
 
     def get_stats(self) -> Union[Dict, bool]:
-        endpoint = self.base_url.format(path=f'bot/stats')
+        endpoint = self.base_url.format(path='bot/stats')
 
         content = self._get(endpoint, params={})
         if content.get('success', False):
