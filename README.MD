@@ -1,5 +1,9 @@
 # PyBotman
 #### Python Botman API Wrapper
+![PyPI](https://img.shields.io/pypi/v/pybotman)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pybotman)
+![PyPI - License](https://img.shields.io/pypi/l/pybotman)
+
 Written by Flowelcat
 
 Introduction
