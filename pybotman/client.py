@@ -128,12 +128,13 @@ class BotmanApi:
         else:
             return False
 
-    def distribution(self, text: str, when: datetime.datetime = None, web_preview: bool = True, notification: bool = True) -> bool:
+    def distribution(self, text: str, when: datetime.datetime = None, web_preview: bool = True, notification: bool = True, parse_mode: Union[str, None] = None) -> bool:
         endpoint = self.base_url.format(path='bot/distribution')
         data = {
             "text": text,
             "web_preview": web_preview,
-            "notification": notification
+            "notification": notification,
+            "parse_mode": parse_mode
         }
         if when:
             data.update(when=when.isoformat())
